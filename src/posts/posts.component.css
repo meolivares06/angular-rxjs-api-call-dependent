@@ -1,0 +1,12 @@
+:host {
+  display: grid;
+  gap: 5px;
+}
+.post {
+  border: dashed 1px darkgoldenrod;
+  padding: 5px;
+}
+.comment {
+  border: dotted 1px darkblue;
+  padding: 5px;
+}

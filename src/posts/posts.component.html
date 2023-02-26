@@ -1,0 +1,17 @@
+<h1>Posts Component</h1>
+
+<div class="post" *ngFor="let post of postsWithComments$ | async">
+  <h4>{{ post.id }} - {{ post.title }}</h4>
+  <div>{{ post.body }}</div>
+
+  <div class="comments">
+    <h4>Comments</h4>
+    <div class="comment" *ngFor="let comment of post.comments">
+      <p>{{ comment.name }}</p>
+      <p>{{ comment.email }}</p>
+      <p>{{ comment.body }}</p>
+    </div>
+  </div>
+</div>
+
+<pre>{{ comments$ | async | json }}</pre>
