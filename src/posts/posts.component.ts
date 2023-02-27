@@ -11,6 +11,7 @@ import {
   from,
   mergeMap,
   forkJoin,
+  tap,
 } from 'rxjs';
 //import chunk from 'lodash/chunk';
 
@@ -48,8 +49,8 @@ export class PostsComponent implements OnInit {
   ngOnInit(): void {
     //this.loadPostsParalelo();
     //this.loadPostsSerie();
-    this.loadPostsChunksMergeMap();
-    this.postsWithComments$ = this.appendCommentsToPosts();
+    this.loadPostsChunksMergeMap2();
+    //this.postsWithComments$ = this.appendCommentsToPosts();
   }
 
   /**
@@ -142,6 +143,29 @@ export class PostsComponent implements OnInit {
     );
   }
 
+  /**
+   * Todas las solicitudes se lanzan de N en N.
+   * Termina una y se busca su dependiente, luego el proximo.
+   */
+  loadPostsChunksMergeMap2(): void {
+    this.posts$ = this.httpClient.get<Post[]>(API_URL + 'posts');
+    this.postsWithComments$ = this.posts$.pipe(
+      switchMap((posts: Post[]) => {
+        const commentObervables$ = from(posts).pipe(
+          mergeMap(
+            (post) =>
+              this.loadCommentsOfPost(post.id).pipe(
+                tap((result) => console.log(result, post.id)),
+                map((comments) => ({ ...post, comments }))
+              ),
+            4
+          ),
+          toArray()
+        );
+        return commentObervables$;
+      })
+    );
+  }
   appendCommentsToPosts(): Observable<Post[]> {
     const postsAndComments$ = forkJoin({
       posts: this.posts$,
