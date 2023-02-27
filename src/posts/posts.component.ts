@@ -195,7 +195,6 @@ export class PostsComponent implements OnInit {
   }
 
   loadCommentsOfPost(postId: number): Observable<Comment[]> {
-    console.log(1);
     return this.httpClient.get<Comment[]>(API_URL + `posts/${postId}/comments`);
   }
 }
